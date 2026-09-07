@@ -1,0 +1,67 @@
+asyncapi: 2.6.0
+
+info:
+  title: CampusLab Notify
+  version: 1.0.0
+
+servers:
+  rabbitmq:
+    url: localhost:5672
+    protocol: amqp
+
+channels:
+
+  q.cmd.email:
+    subscribe:
+      operationId: consumeEmailCommand
+      message:
+        $ref: '#/components/messages/NotificationMessage'
+
+  q.cmd.prep:
+    subscribe:
+      operationId: consumePreparationCommand
+      message:
+        $ref: '#/components/messages/NotificationMessage'
+
+  q.cmd.voucher:
+    subscribe:
+      operationId: consumeVoucherCommand
+      message:
+        $ref: '#/components/messages/NotificationMessage'
+
+components:
+
+  messages:
+
+    NotificationMessage:
+      payload:
+        type: object
+        required:
+          - type
+          - eventId
+          - timestamp
+          - traceId
+          - correlationId
+          - payload
+
+        properties:
+
+          type:
+            type: string
+
+          eventId:
+            type: string
+
+          timestamp:
+            type: string
+            format: date-time
+
+          traceId:
+            type: string
+
+          correlationId:
+            type: string
+
+          payload:
+            type: object
+            additionalProperties: true
