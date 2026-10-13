@@ -1,6 +1,6 @@
 package cl.campuslab.notify.messaging.consumer;
 
-import cl.campuslab.notify.config.RabbitConfig;
+import cl.campuslab.notify.config.MessagingNames;
 import cl.campuslab.notify.domain.model.NotificationMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class NotificationConsumer {
 
-    @RabbitListener(queues = RabbitConfig.EMAIL_QUEUE)
+    @RabbitListener(queues = MessagingNames.EMAIL_QUEUE)
     public void consumeEmailCommand(NotificationMessage message) {
         log.info(
                 "Email command received. eventId={}, type={}, payload={}",
@@ -20,7 +20,7 @@ public class NotificationConsumer {
         );
     }
 
-    @RabbitListener(queues = RabbitConfig.PREP_QUEUE)
+    @RabbitListener(queues = MessagingNames.PREP_QUEUE)
     public void consumePreparationCommand(NotificationMessage message) {
         log.info(
                 "Preparation command received. eventId={}, type={}, payload={}",
@@ -30,7 +30,7 @@ public class NotificationConsumer {
         );
     }
 
-    @RabbitListener(queues = RabbitConfig.VOUCHER_QUEUE)
+    @RabbitListener(queues = MessagingNames.VOUCHER_QUEUE)
     public void consumeVoucherCommand(NotificationMessage message) {
         log.info(
                 "Voucher command received. eventId={}, type={}, payload={}",
