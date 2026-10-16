@@ -1,7 +1,15 @@
 package cl.campuslab.notify.config;
 
-
-import java.util.Queue;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
+import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import tools.jackson.databind.json.JsonMapper;
 
 @Configuration
 public class RabbitConfig {
@@ -120,7 +128,7 @@ public class RabbitConfig {
     }
 
     @Bean
-    public MessageConverter jsonMessageConverter(ObjectMapper objectMapper) {
+    public MessageConverter jsonMessageConverter(JsonMapper objectMapper) {
         return new JacksonJsonMessageConverter(objectMapper);
     }
 }
