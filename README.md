@@ -25,27 +25,18 @@ No expone endpoints HTTP públicos.
 
 ## Colas
 
+Notify únicamente consume estas colas, creadas y administradas por
+`ms-campuslab-rabbitmq`:
+
 ```text
 q.cmd.email
 q.cmd.prep
 q.cmd.voucher
 ```
 
-## Dead Letter Queues
-
-```text
-q.cmd.email.dlq
-q.cmd.prep.dlq
-q.cmd.voucher.dlq
-```
-
-## Exchanges
-
-```text
-cmd.direct
-cmd.topic
-cmd.dead.dlx
-```
+Notify no declara colas, exchanges, bindings ni dead-letter queues.
+Los mensajes rechazados sin requeue son enrutados por RabbitMQ a la DLQ
+configurada para la cola de origen.
 
 ## Formato de mensaje
 
