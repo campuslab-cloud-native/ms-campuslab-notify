@@ -2,12 +2,17 @@ package cl.campuslab.notify.domain.service;
 
 import cl.campuslab.notify.domain.model.NotificationMessage;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ExtendWith(OutputCaptureExtension.class)
 class NotificationProcessingServiceTest {
 
     private final NotificationProcessingService processingService =
@@ -38,5 +43,21 @@ class NotificationProcessingServiceTest {
                 IllegalArgumentException.class,
                 () -> processingService.processEmail(notification)
         );
+    }
+
+    @Test
+    void doesNotWriteNotificationPayloadToLogs(CapturedOutput output) {
+        String sensitiveValue = "private-user-marker";
+        NotificationMessage notification = NotificationMessage.builder()
+                .type("COMMAND")
+                .eventId("event-2")
+                .payload(Map.of("userId", sensitiveValue))
+                .build();
+
+        processingService.processEmail(notification);
+        processingService.processPreparation(notification);
+        processingService.processVoucher(notification);
+
+        assertFalse(output.getAll().contains(sensitiveValue));
     }
 }

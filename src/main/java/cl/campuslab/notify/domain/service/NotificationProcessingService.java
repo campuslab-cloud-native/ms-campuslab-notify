@@ -12,10 +12,9 @@ public class NotificationProcessingService {
         validate(message);
 
         log.info(
-                "Processing email notification. eventId={}, type={}, payload={}",
+                "Processing email notification. eventId={}, type={}",
                 message.getEventId(),
-                message.getType(),
-                message.getPayload()
+                message.getType()
         );
     }
 
@@ -23,10 +22,9 @@ public class NotificationProcessingService {
         validate(message);
 
         log.info(
-                "Processing preparation notification. eventId={}, type={}, payload={}",
+                "Processing preparation notification. eventId={}, type={}",
                 message.getEventId(),
-                message.getType(),
-                message.getPayload()
+                message.getType()
         );
     }
 
@@ -34,10 +32,9 @@ public class NotificationProcessingService {
         validate(message);
 
         log.info(
-                "Processing voucher notification. eventId={}, type={}, payload={}",
+                "Processing voucher notification. eventId={}, type={}",
                 message.getEventId(),
-                message.getType(),
-                message.getPayload()
+                message.getType()
         );
     }
 
