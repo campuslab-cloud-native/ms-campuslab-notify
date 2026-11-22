@@ -1,70 +1,23 @@
 package cl.campuslab.notify.messaging.consumer;
 
-import cl.campuslab.notify.config.MessagingNames;
 import cl.campuslab.notify.domain.model.NotificationMessage;
 import cl.campuslab.notify.domain.service.NotificationProcessingService;
 import com.rabbitmq.client.Channel;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 @Slf4j
-@Component
-@RequiredArgsConstructor
-public class NotificationConsumer {
+abstract class AbstractNotificationConsumer {
 
-    private final NotificationProcessingService processingService;
+    protected final NotificationProcessingService processingService;
 
-    @RabbitListener(queues = MessagingNames.EMAIL_QUEUE)
-    public void consumeEmailCommand(
-            NotificationMessage notification,
-            Message amqpMessage,
-            Channel channel
-    ) throws IOException {
-
-        process(
-                notification,
-                amqpMessage,
-                channel,
-                () -> processingService.processEmail(notification)
-        );
+    AbstractNotificationConsumer(NotificationProcessingService processingService) {
+        this.processingService = processingService;
     }
 
-    @RabbitListener(queues = MessagingNames.PREP_QUEUE)
-    public void consumePreparationCommand(
-            NotificationMessage notification,
-            Message amqpMessage,
-            Channel channel
-    ) throws IOException {
-
-        process(
-                notification,
-                amqpMessage,
-                channel,
-                () -> processingService.processPreparation(notification)
-        );
-    }
-
-    @RabbitListener(queues = MessagingNames.VOUCHER_QUEUE)
-    public void consumeVoucherCommand(
-            NotificationMessage notification,
-            Message amqpMessage,
-            Channel channel
-    ) throws IOException {
-
-        process(
-                notification,
-                amqpMessage,
-                channel,
-                () -> processingService.processVoucher(notification)
-        );
-    }
-
-    private void process(
+    protected void process(
             NotificationMessage notification,
             Message amqpMessage,
             Channel channel,

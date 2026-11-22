@@ -21,7 +21,7 @@ class NotificationConsumerTest {
     void acknowledgesSuccessfullyProcessedMessage() throws IOException {
         NotificationProcessingService processingService =
                 mock(NotificationProcessingService.class);
-        NotificationConsumer consumer = new NotificationConsumer(processingService);
+        EmailNotificationConsumer consumer = new EmailNotificationConsumer(processingService);
         Channel channel = mock(Channel.class);
         NotificationMessage notification = validNotification();
         Message message = amqpMessage(42L, false);
@@ -34,8 +34,8 @@ class NotificationConsumerTest {
 
     @Test
     void rejectsInvalidMessageWithoutRequeue() throws IOException {
-        NotificationConsumer consumer =
-                new NotificationConsumer(new NotificationProcessingService());
+        EmailNotificationConsumer consumer =
+                new EmailNotificationConsumer(new NotificationProcessingService());
         Channel channel = mock(Channel.class);
 
         consumer.consumeEmailCommand(null, amqpMessage(43L, false), channel);
@@ -50,7 +50,7 @@ class NotificationConsumerTest {
         doThrow(new IllegalStateException("processing failed"))
                 .when(processingService)
                 .processEmail(any());
-        NotificationConsumer consumer = new NotificationConsumer(processingService);
+        EmailNotificationConsumer consumer = new EmailNotificationConsumer(processingService);
         Channel channel = mock(Channel.class);
         NotificationMessage notification = validNotification();
 
@@ -59,6 +59,36 @@ class NotificationConsumerTest {
 
         verify(channel).basicNack(44L, false, true);
         verify(channel).basicNack(45L, false, false);
+    }
+
+    @Test
+    void processesPreparationCommand() throws IOException {
+        NotificationProcessingService processingService =
+                mock(NotificationProcessingService.class);
+        PreparationNotificationConsumer consumer =
+                new PreparationNotificationConsumer(processingService);
+        Channel channel = mock(Channel.class);
+        NotificationMessage notification = validNotification();
+
+        consumer.consumePreparationCommand(notification, amqpMessage(46L, false), channel);
+
+        verify(processingService).processPreparation(notification);
+        verify(channel).basicAck(46L, false);
+    }
+
+    @Test
+    void processesVoucherCommand() throws IOException {
+        NotificationProcessingService processingService =
+                mock(NotificationProcessingService.class);
+        VoucherNotificationConsumer consumer =
+                new VoucherNotificationConsumer(processingService);
+        Channel channel = mock(Channel.class);
+        NotificationMessage notification = validNotification();
+
+        consumer.consumeVoucherCommand(notification, amqpMessage(47L, false), channel);
+
+        verify(processingService).processVoucher(notification);
+        verify(channel).basicAck(47L, false);
     }
 
     private NotificationMessage validNotification() {
